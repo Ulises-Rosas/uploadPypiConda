@@ -10,5 +10,5 @@ Software requierements:
 This bash shell must be inside the same directory of the `setup.py` file of your python package in order to run correctly. Afterwards, you can run the following line:
 
 ```Shell
-./uploadPypiConda
+./uploadPypiConda.sh
 ```
