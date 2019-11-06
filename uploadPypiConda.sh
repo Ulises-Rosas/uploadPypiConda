@@ -68,7 +68,7 @@ anaconda upload $bldd
 
 for p in win-64 linux-64 osx-64; do
 
-    if [[ ! -z $(echo $bldd | grep $p) ]]; then
+    if [[ -z $(echo $bldd | grep $p) ]]; then
 
         conda convert --platform $p $bldd -o $pkg_name'_PCU'
         anaconda upload $(find $pkg_name'_PCU/'$p -name *.tar.bz2)        
