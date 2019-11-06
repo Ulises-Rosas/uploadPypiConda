@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the MIT Public License. This program comes as-is 
@@ -22,8 +22,8 @@ function seddy {
 }
 
 function urlsed {
-
     fmt="s#$1#"$2"#g"
+    
     if [[ `uname` == 'Linux' ]]; then
         sed -ibakPCU -re "${fmt[@]}" $3
     else
@@ -39,9 +39,12 @@ twine upload dist/*
 pkg_name=$(python3 setup.py --name | awk '{print tolower($0)}')
 pkg_ver=$(python3 setup.py --version | awk '{print tolower($0)}')
 
-if [[ ! -z $(ls $pkg_name'_PCU') ]]; then
+if [[ ! -z $(ls . | grep $pkg_name'_PCU') ]]; then
     rm -rf $pkg_name'_PCU'
 fi
+
+echo -e "\nWaiting for complete upload at PyPI...\n"
+sleep 120
 
 echo
 echo -e "${LGREEN}Building and Uploading for ANACONDA...${NC}"
@@ -64,8 +67,12 @@ bldd=$(conda-build $pkg_name'_PCU'/$pkg_name --output)
 anaconda upload $bldd
 
 for p in win-64 linux-64 osx-64; do
-    conda convert --platform $p $bldd -o $pkg_name'_PCU'
-    anaconda upload $(find $pkg_name'_PCU/'$p -name *.tar.bz2)
+
+    if [[ ! -z $(echo $bldd | grep $p) ]]; then
+
+        conda convert --platform $p $bldd -o $pkg_name'_PCU'
+        anaconda upload $(find $pkg_name'_PCU/'$p -name *.tar.bz2)        
+    fi
 done
 
 rm -rf $pkg_name'_PCU'
