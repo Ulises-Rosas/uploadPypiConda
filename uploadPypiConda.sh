@@ -34,6 +34,8 @@ function urlsed {
 echo
 echo -e "${LGREEN}Building and Uploading for PyPI...${NC}"
 python3 setup.py sdist bdist_wheel
+# replace directory with the directory containing complete set of binaries
+# remove egg* files
 twine upload dist/*
 
 pkg_name=$(python3 setup.py --name | awk '{print tolower($0)}')
